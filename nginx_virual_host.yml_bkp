@@ -1,0 +1,77 @@
+---
+-
+  become: true
+  become_method: sudo
+  hosts: webserver
+  remote_user: patmat
+  vars:
+    users: 
+    - username: "user1"
+    - username: "user2"
+    - username: "user3"
+
+  tasks:
+    -
+      name: "stop ngnix service on host"
+      service:
+        name: nginx
+        enabled: yes
+        state: stopped
+    - 
+      name: "uninstall nginx "
+      package:
+        name: nginx
+        state: absent
+    - 
+      name: "install git and nginx on Redhat Family"
+      yum:
+        name: ['nginx', 'git']
+        state: present
+      when: ansible_os_family == "RedHat"
+
+    - 
+      name: coping default nginx conf
+      copy: 
+        src: nginx.conf
+        dest: /etc/nginx/
+    - 
+      name: "install git and nginx on Debian Family"
+      apt:
+        name: ['nginx', 'git']
+        state: present
+      when: ansible_os_family == "Debian"
+
+    -
+      name: "Creating Index file for User1, User2, user3 "
+      file:
+        path: /var/www/html/{{ item.username }}/
+        owner: root
+        group: root
+      with_items: "{{ users }}"
+      tags: "ayush2"
+
+
+    -
+      name: Creating  a login user {{ item.username }}
+      user:
+         name: "{{ item.username }}"
+         state: present
+         shell: /bin/bash       # Defaults to /bin/bash
+         createhome: yes        # Defaults to yes
+      with_items: "{{ users }}"
+      tags: "ayush3"
+
+    - 
+      name: copy nginx site.conf
+      template:
+        src: "{{ item.username }}.conf.j2"
+        dest: "/etc/nginx/sites-enabled/{{ item.username }}.com"
+      with_items: "{{ users }}"
+
+    - 
+      name: adding domain and ip in /etc/hosts
+      lineinfile: 
+        path: /etc/hosts
+        line: "{{ ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) }} {{ item.username}}.com"
+      with_items: "{{ users }}"
+      tags: ayush4

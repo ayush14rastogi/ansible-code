@@ -1,0 +1,18 @@
+--- 
+- 
+  hosts: webserver
+  tasks: 
+    - 
+      debug: 
+        msg: "hostanme: {{ ansible_hostname }},IPv4 address:{{ ansible_default_ipv4.address }}, Operating Syetem: {{ ansible_system}} ,System Memory : {{ansible_memory_mb['real'] }} "
+      name: "print Hostname, IP addresses (public, private), Operating System, RAM information (total, used, free)"
+    - 
+      debug: 
+        msg: "Mount Point is {{item.mount}} and total size is  {{ (item.size_total/1024)/1024 }} MB, size avail is {{ (item.size_available/1024)/1024}} MB,size used is  {{ (item.size_total/1024)/1024 - (item.size_available/1024)/1024 }} MB"
+      loop: "{{ansible_mounts}}"
+      name: "Disk information (total,used, free)"
+    - 
+      debug: 
+        msg: "{{ ansible_lo['device'] ,ansible_eth0['device'] }}"
+      name: "Available Network Devices."
+

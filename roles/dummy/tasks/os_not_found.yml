@@ -1,0 +1,3 @@
+- name: OS not found
+  debug:
+    msg: "OS not supported"

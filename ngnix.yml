@@ -1,0 +1,38 @@
+--- 
+- 
+  become: true
+  become_method: sudo
+  hosts: webserver
+  remote_user: patmat
+  tasks: 
+    - 
+      name: "install ngnix to host"
+      package: 
+        name: nginx
+        state: present
+    -
+      name: "start ngnix service on host"
+      service:
+        name: nginx
+        enabled: yes
+        state: started
+
+    -
+      name: "stop ngnix service on host"
+      service:
+        name: nginx
+        enabled: yes
+        state: stopped
+
+    - name: copying file with playbook
+      become: true 
+      copy:
+        src: index.html
+        dest: /usr/share/nginx/html
+
+    -
+      name: "start ngnix service on host"
+      service:
+        name: nginx
+        state: restarted
+

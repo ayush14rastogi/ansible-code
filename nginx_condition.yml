@@ -1,0 +1,20 @@
+--- 
+- 
+  become: true
+  become_method: sudo
+  hosts: webserver
+  remote_user: patmat
+  tasks:
+  - name: Ansible check file exists.
+    stat:
+      path: /usr/share/nginx/html/index.html
+    register: p
+  - debug:
+      msg: "File exists..."
+    when: p.stat.exists
+  - 
+    name: "install ngnix to host"
+    package:
+      name: nginx
+      state: present
+    when: p.stat.exists == False

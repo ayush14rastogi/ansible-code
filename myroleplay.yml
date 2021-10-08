@@ -1,0 +1,11 @@
+---
+- hosts: webserver
+  become: true
+  vars_prompt:
+    - name: name
+      prompt: What is your name?
+    - name: userport
+      prompt: What is your ngnix port?
+
+  roles:
+    - dummy

@@ -1,0 +1,26 @@
+---
+-
+  become: true
+  become_method: sudo
+  hosts: webserver
+  remote_user: patmat
+  vars:
+    users: 
+    - username: "user1"
+    - username: "user2"
+    - username: "user3"
+
+  tasks:
+    - 
+      name: copy nginx site.conf
+      template:
+        src: "{{ item.username }}.conf.j2"
+        dest: "/etc/nginx/sites-enabled/{{ item.username }}.com"
+      with_items: "{{ users }}"
+      notify: restart nginx
+
+  handlers:
+    - name: restart nginx
+      service:
+        name: nginx
+        state: restarted

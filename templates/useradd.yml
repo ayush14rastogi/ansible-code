@@ -1,0 +1,24 @@
+---
+- hosts: webserver
+  remote_user: patmat
+  become: yes
+  become_method: sudo
+  gather_facts: no
+  connection: ssh
+  tasks:
+   - name: Add group "linuxadmin" to remote server
+     group:
+       name: linuxadmin
+       gid: 2010
+       state: present
+
+   - name: Add user "sysadmin" to remote server
+     user:
+       name: sysadmin
+       comment: "Privileged User"
+       uid: 2001
+       groups: linuxadmin
+       append: yes
+       shell: /bin/bash
+       createhome: yes
+       home: /home/sysadmin

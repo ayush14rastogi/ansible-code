@@ -1,0 +1,77 @@
+---
+-
+  become: true
+  become_method: sudo
+  hosts: webserver
+  remote_user: patmat
+  vars:
+    users: 
+    - username: "user1"
+    - username: "user2"
+    - username: "user3"
+
+  tasks:
+    -
+      name: "stop ngnix service on host"
+      service:
+        name: nginx
+        enabled: yes
+        state: stopped
+    - 
+      name: "uninstall nginx "
+      package:
+        name: nginx
+        state: absent
+    - 
+      name: "install git and nginx on Redhat Family"
+      yum:
+        name: ['nginx', 'git']
+        state: present
+      when: ansible_os_family == "RedHat"
+
+
+    - 
+      name: "install git and nginx on Debian Family"
+      apt:
+        name: ['nginx', 'git']
+        state: present
+      when: ansible_os_family == "Debian"
+
+    -
+      name: "taking backup for ngnix cof"
+      copy: 
+        src: /etc/nginx/nginx.conf
+        dest: /etc/nginx/nginx.conf_new_bkup
+        owner: root
+        group: root
+        remote_src: yes
+      tags: "ayush1" 
+
+    -
+      name: "Creating Index file for User1, User2, user3 "
+      copy:
+        src: /usr/share/nginx/html/index.html
+        dest: /var/www/html/{{ item }}/
+        owner: root
+        group: root
+        remote_src: yes
+      loop: 
+        - user1
+        - user2
+        - user3
+      tags: "ayush2"
+
+
+
+
+    -
+      name: Creating  a login user {{ item.username }}
+      user:
+         name: "{{ item.username }}"
+         state: present
+         shell: /bin/bash       # Defaults to /bin/bash
+         createhome: yes        # Defaults to yes
+      with_items: "{{ users }}"
+      tags: "ayush3"
+      
+

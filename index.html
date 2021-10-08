@@ -1,0 +1,35 @@
+
+PLAY [webserver] ************************************************************************************************************************************************************************************************
+
+TASK [Gathering Facts] ******************************************************************************************************************************************************************************************
+ok: [172.31.10.132]
+ok: [172.31.6.136]
+
+TASK [print Hostname, IP addresses (public, private), Operating System, RAM information (total, used, free)] ****************************************************************************************************
+ok: [172.31.10.132] => {
+    "msg": "hostanme: ip-172-31-10-132,IPv4 address:172.31.10.132, Operating Syetem: Linux ,System Memory : {u'total': 983, u'free': 259, u'used': 724} "
+}
+ok: [172.31.6.136] => {
+    "msg": "hostanme: ip-172-31-6-136,IPv4 address:172.31.6.136, Operating Syetem: Linux ,System Memory : {u'total': 983, u'free': 349, u'used': 634} "
+}
+
+TASK [Disk information (total,used, free)] **********************************************************************************************************************************************************************
+ok: [172.31.10.132] => (item={u'block_used': 508483, u'uuid': u'55ee5a5f-d155-47e0-9121-e6f4522cb2bf', u'size_total': 8577331200, u'block_total': 2094075, u'mount': u'/', u'block_available': 1585592, u'size_available': 6494584832, u'fstype': u'xfs', u'inode_total': 4193216, u'options': u'rw,noatime,attr2,inode64,noquota', u'device': u'/dev/xvda1', u'inode_used': 49698, u'block_size': 4096, u'inode_available': 4143518}) => {
+    "msg": "Mount Point is / and total size is  8179.98046875 MB, size avail is 6193.71875 MB,size used is  1986.26171875 MB"
+}
+ok: [172.31.6.136] => (item={u'block_used': 385575, u'uuid': u'55ee5a5f-d155-47e0-9121-e6f4522cb2bf', u'size_total': 8577331200, u'block_total': 2094075, u'mount': u'/', u'block_available': 1708500, u'size_available': 6998016000, u'fstype': u'xfs', u'inode_total': 4193216, u'options': u'rw,noatime,attr2,inode64,noquota', u'device': u'/dev/xvda1', u'inode_used': 47948, u'block_size': 4096, u'inode_available': 4145268}) => {
+    "msg": "Mount Point is / and total size is  8179.98046875 MB, size avail is 6673.828125 MB,size used is  1506.15234375 MB"
+}
+
+TASK [Available Network Devices.] *******************************************************************************************************************************************************************************
+ok: [172.31.10.132] => {
+    "msg": "(u'lo', u'eth0')"
+}
+ok: [172.31.6.136] => {
+    "msg": "(u'lo', u'eth0')"
+}
+
+PLAY RECAP ******************************************************************************************************************************************************************************************************
+172.31.10.132              : ok=4    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.31.6.136               : ok=4    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+

@@ -1,0 +1,70 @@
+---
+- 
+  become: true
+  become_method: sudo
+  hosts: webserver
+  remote_user: patmat
+  tasks:
+    -
+      name: "stop ngnix service on host"
+      service:
+        name: nginx
+        enabled: yes
+        state: stopped
+    - 
+      name: "uninstall nginx "
+      package:
+        name: nginx
+        state: absent
+    - 
+      name: "install git and nginx "
+      package:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - nginx
+        - git
+    - 
+      name: " Removing old files" 
+      file: 
+        path: /usr/share/nginx/
+        state: absent 
+    -
+      git:
+        clone: true
+        dest: /usr/share/nginx/html/
+        repo: "https://github.com/cloudacademy/static-website-example"
+      name: "download git repo"
+
+    - 
+      lineinfile:
+        path: /etc/nginx/nginx.conf
+        regexp: '^error_log'
+        line: 'error_log  /var/log/nginx/opstree.com.error.log notice;'
+      tags: "ayush1"
+      name: "editing the ngnix conf1"
+    -
+      lineinfile:
+        path: /etc/nginx/nginx.conf
+        regexp: '^    access_log'
+        line: 'access_log /var/log/nginx/opstree.com.access.log main;'
+      tags: "ayush2"
+      name: "editing the ngnix conf2"
+    -
+      lineinfile:
+        path: /etc/nginx/conf.d/default.conf
+        regexp: '^    listen'
+        line: 'listen       127.0.0.1:80;'
+      tags: "ayush3"
+      name: "editing the ngnix conf3"
+
+
+    -
+      name: "start ngnix service on host"
+      service:
+        name: nginx
+        enabled: yes
+        state: restarted
+      tags: "ayush4"
+      name: "editing the ngnix conf4"
+

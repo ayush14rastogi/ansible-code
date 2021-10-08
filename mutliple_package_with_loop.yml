@@ -1,0 +1,15 @@
+---
+- hosts: webserver
+  remote_user: patmat
+  become: yes
+  become_method: sudo
+  tasks: 
+    - 
+      name: "install packages using loop"
+      package: 
+        name: "{{ item }}"
+        state: present 
+      loop: 
+        - httpd
+        - php
+        - telnet

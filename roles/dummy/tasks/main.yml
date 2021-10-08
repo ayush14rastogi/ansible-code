@@ -1,0 +1,46 @@
+---
+# tasks file for dummy
+- name: Install the correct web server for RHEL
+  import_tasks: redhat.yml
+  when: ansible_facts['os_family']|lower == 'redhat'
+
+- name: Install the correct web server for Debian
+  import_tasks:  debian.yml
+  when: ansible_facts['os_family']|lower == 'debian'
+
+- name: Install the correct web server for Debian
+  import_tasks: os_not_found.yml
+  when: ansible_facts['os_family']|lower != 'debian'
+
+- name: copy index.yml to target host
+  copy:
+    src: "{{ role_path }}/files/index.html"
+    dest: /usr/share/nginx/html/index.html
+  when: name|length == 0
+
+- name: creating index files on target host 
+  shell: echo "Hello from {{ name }}" > /usr/share/nginx/html/index.html
+  when: name|length != 0
+
+- name: creating index files on localhost
+  shell: echo "Hello from {{ name }}" >  "{{ role_path }}/files/index_new.html"
+  when: name|length != 0
+  delegate_to: localhost
+
+
+- name: copy index_new.html to target host
+  copy:
+    src: "{{ role_path }}/files/index_new.html"
+    dest: /usr/share/nginx/html/index.html
+  when: name|length == 0
+
+-
+  lineinfile:
+    path: /etc/nginx/conf.d/default.conf
+    regexp: '^listen'
+    line: 'listen       {{ userport }};'
+  tags: "ayush3"
+  name: "nginx port change if user chaneg the port"
+  when: userport != 80
+  notify:
+     restart nginx

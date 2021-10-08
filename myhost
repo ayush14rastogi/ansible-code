@@ -1,0 +1,9 @@
+[mylocalhost]
+localhost
+
+[webserver]
+172.31.10.132
+172.31.6.136
+
+[dockerhost]
+172.31.22.208
